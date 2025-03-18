@@ -82,7 +82,7 @@ small {
 }
 .todo_app{
   background-color: #ffffff;
-  width: 100%;
+  width: 150%;
   max-width:540px;
   margin:50px auto auto;
   padding: 40px 30px 70px;
@@ -103,14 +103,65 @@ small {
   align-items:left;
   justify-content: space-between;
   /* border: 1px solid #000; */
-  height:150px;
+  height:200px;
 }
 #input_item {
-  padding: 10px;
-  margin: 5px;
+  padding: 8px;
+  margin: 3px;
   border-radius: 10px;
   /* background-color: lightblue; */
 }
+#list_container{
+  margin:10px;
+}
 button{
   margin-top:10px;
+}
+
+ul li{
+  list-style:none;
+  font-size:17px;
+  padding: 12px 8px 12px 40px;
+  user-select:none;
+  cursor:pointer;
+  border:0.5px solid pink;
+  margin:5px;
+  border-radius:20px;
+  position:relative;
+}
+
+ul li::before{
+    content:'';
+    position:absolute;
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    border:0.5px solid black;
+    /* background-image:url(images/unchecked.png); */
+    background-size:cover;
+    background-position:center;
+    top:12px;
+    left:8px;
+}
+
+ul li span{
+  content:'';
+  position:absolute;
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background-image:url(images/delete.jpg); 
+  background-size:cover;
+  background-position:center;
+  top:12px;
+  right:8px;
+}
+ul li.checked{
+    color:#555;
+    text-decoration: line-through;
+}
+
+ul li.checked::before{
+     background-image: url(images/checked.png);
+     
 }
