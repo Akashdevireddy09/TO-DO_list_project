@@ -123,7 +123,15 @@ async function addTask() {
 //     }
 //   }
   
+addTaskButton.addEventListener("click", addTask);
+
 async function displayTasks() {
+    
+    if (!auth.currentUser) {
+        console.error("No user is currently logged in.");
+        return;
+      }
+
     const taskList = document.getElementById("list_container"); // Assuming this is the UL element
     taskList.innerHTML = ""; // Clear previous list
 
