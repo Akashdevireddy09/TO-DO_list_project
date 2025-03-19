@@ -111,6 +111,18 @@ small {
   border-radius: 10px;
   /* background-color: lightblue; */
 }
+
+#add_task_button{
+  padding: 8px;
+  margin: 3px;
+  border-radius: 10px;
+}
+
+#logout_button{
+  padding: 8px;
+  margin: 3px;
+  border-radius: 10px;
+}
 #list_container{
   margin:10px;
 }
@@ -164,4 +176,10 @@ ul li.checked{
 ul li.checked::before{
      background-image: url(images/checked.png);
      
+}
+
+ul li.overdue {
+  border: 2px solid red; 
+  color: red;
+  font-weight: bold; 
 }

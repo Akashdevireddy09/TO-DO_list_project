@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Todo List</title>
+    <script type="module" src="scripttodo.js" defer></script>
   </head>
   <body>
     <!-- <h1>todos</h1>
@@ -20,10 +21,11 @@
         <h2>TO-DO LIST <img src=".\images\logo.png" alt="todo_list_logo"> </h2>
         <div class="row">
           <h4>Add task:</h4>
-          <input type="text" id="input_item" placeholder="Add your task">
+          <input type="text" id="input_task" placeholder="Add your task">
           <h4>Target date:</h4>
-          <input type="date" id="input_item">
-          <button id="input_item" onclick="addTask()">Add Task</button>
+          <input type="date" id="input_date">
+          <button id="add_task_button" onclick="addTask()">Add Task</button>
+          <button id="logout_button">Logout</button>
         </div>
 
         <ul id="list_container"> 
@@ -34,6 +36,49 @@
         </ul> 
       </div>
      </div>
-    <script src="script.js"></script>
+ 
+    <script type="module">
+      
+    // Your web app's Firebase configuration
+      
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app); // Optional, for Analytics
+      const auth = getAuth(); // Initialize Firebase Authentication
+      const db = getFirestore(app); // Initialize Firestore
+
+      // Authentication Check and Logout
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          // Redirect to login if not authenticated
+          window.location.replace('login.html');
+
+        } else {
+          // User is signed in.  You can access user.uid here.
+          console.log("User is logged in:", user.uid);
+          // Call displayTasks() or other functions to load user-specific data.
+          // Make sure displayTasks() is adapted to load data only for the current user.
+          displayTasks();
+        }
+      });
+
+      const logoutButton = document.getElementById("logout_button");
+      logoutButton.addEventListener("click", () => {
+        signOut(auth)
+          .then(() => {
+            // Sign-out successful.
+            console.log("User signed out");
+            window.location.replace('login.html');
+
+          })
+          .catch((error) => {
+            // An error happened.
+            console.error("Sign out error", error);
+          });
+      });
+    </script>
+    <script type="module" src="scripttodo.js" defer></script>
+
+    
   </body>
 </html>
