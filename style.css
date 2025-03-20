@@ -6,73 +6,6 @@
   font-family: 'Poppins','sans-serif';
   box-sizing: border-box;
 }
-/* 
-body {
-  background-color: #f5f5f5;
-  color: #444;
-  font-family: 'Poppins', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  margin: 0;
-}
-
-h1 {
-  color: rgb(179, 131, 226);
-  font-size: 10rem;
-  text-align: center;
-  opacity: 0.8;
-}
-
-form {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 100%;
-  width: 400px;
-}
-
-.input {
-  border: solid rgb(179, 131, 226);
-  color: #444;
-  font-size: 2rem;
-  padding: 1rem 2rem;
-  display: block;
-  width: 100%;
-}
-
-.input::placeholder {
-  color: #d5d5d5;
-}
-
-.input:focus {
-  outline-color: rgb(179, 131, 226);
-}
-
-.todos {
-  background-color: #fff;
-  padding: 0;
-  margin: 0;
-  list-style-type: none;
-}
-
-.todos li {
-  border-top: 1px solid #e5e5e5;
-  cursor: pointer;
-  font-size: 1.5rem;
-  padding: 1rem 2rem;
-}
-
-.todos li.completed {
-  color: #b6b6b6;
-  text-decoration: line-through;
-}
-
-small {
-  color: #b5b5b5;
-  margin-top: 3rem;
-  text-align: center;
-} */
 
 .container{
   width: 100%;
@@ -87,6 +20,7 @@ small {
   margin:50px auto auto;
   padding: 40px 30px 70px;
   border-radius: 10px;
+  box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.3);
 }
 .todo_app h2{
   display:flex;
@@ -103,9 +37,15 @@ small {
   align-items:left;
   justify-content: space-between;
   /* border: 1px solid #000; */
-  height:200px;
+  height:250px;
 }
-#input_item {
+#input_task  {
+  padding: 8px;
+  margin: 3px;
+  border-radius: 10px;
+  /* background-color: lightblue; */
+}
+#input_date  {
   padding: 8px;
   margin: 3px;
   border-radius: 10px;
@@ -168,9 +108,23 @@ ul li span{
   top:12px;
   right:8px;
 }
+
+.task-date{
+   
+  top:10px;
+  right:6px;
+  font-size: 14px;
+  color:#666;
+  width:30px;
+  height:10px;
+  position:absolute;
+  margin-left:10px;
+  
+}
 ul li.checked{
     color:#555;
     text-decoration: line-through;
+    border: 1px solid green;
 }
 
 ul li.checked::before{

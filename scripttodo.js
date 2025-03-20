@@ -52,7 +52,7 @@ async function addTask() {
 
     if (taskText !== "") {
         try {
-            await addDoc(todosCollection, {  // Use addDoc() from modular SDK
+            const docRef=await addDoc(todosCollection, {  // Use addDoc() from modular SDK
                 text: taskText,
                 date: taskDate,
                 completed: false
@@ -60,7 +60,7 @@ async function addTask() {
             input.value = "";
             inputDate.value = "";
 
-            displayTasks();
+            appendTask({id:docRef.id, text:taskText,date:taskDate,completed:false});
         } catch (e) {
             console.error("Error adding document: ", e);
         }
@@ -126,56 +126,66 @@ async function addTask() {
 addTaskButton.addEventListener("click", addTask);
 
 async function displayTasks() {
-    
-    if (!auth.currentUser) {
-        console.error("No user is currently logged in.");
-        return;
-      }
+    if (!auth.currentUser) return;
 
-    const taskList = document.getElementById("list_container"); // Assuming this is the UL element
-    taskList.innerHTML = ""; // Clear previous list
+    const taskList = document.getElementById("list_container");
+    taskList.innerHTML = ""; // Clear list initially
 
     const tasksRef = collection(db, 'users', auth.currentUser.uid, 'todos');
     const querySnapshot = await getDocs(tasksRef);
 
     querySnapshot.forEach((doc) => {
-        const taskData = doc.data();
-        const taskId = doc.id;
-
-        // Create list item
-        const li = document.createElement("li");
-        li.innerText = taskData.text;
-
-        if (taskData.completed) {
-            li.classList.add("checked"); // Apply strike-through style
-        }
-
-        // Click on task text or check circle to toggle completion
-        li.addEventListener("click", () => toggleComplete(taskId));
-
-        // Check if the task is overdue
-        const isOverdue = taskData.date && new Date(taskData.date) < new Date();
-  
-        // Add the "overdue" class if the task is overdue
-        if (isOverdue) {
-          taskElement.classList.add("overdue");
-        }
-
-        // Create delete button (trash icon)
-        const deleteBtn = document.createElement("span"); 
-        deleteBtn.classList.add("delete"); // Matches your CSS styling
-        deleteBtn.addEventListener("click", (event) => {
-            event.stopPropagation(); // Prevent marking task as complete when deleting
-            deleteTask(taskId);
-        });
-
-        // Append delete button to list item
-        li.appendChild(deleteBtn);
-
-        // Append list item to the task list
-        taskList.appendChild(li);
+        appendTask({ id: doc.id, ...doc.data() });
     });
 }
+
+
+function appendTask(task) {
+    const taskList = document.getElementById("list_container");
+
+    // Create list item
+    const li = document.createElement("li");
+    li.innerText = task.text;
+    li.setAttribute("data-id", task.id); // Store task ID in the element
+   
+
+    if (task.completed) {
+        li.classList.add("checked");
+    }
+
+    // Click event to toggle completion
+    li.addEventListener("click", () => toggleComplete(task.id));
+
+    const taskDueDate = task.date || inputDate.value; // Use stored task date or input date
+
+    const isOverdue = taskDueDate && new Date(taskDueDate) < new Date();
+    
+    // Add the "overdue" class if the task is overdue
+    if (isOverdue) {
+        li.classList.add("overdue");
+    }
+    
+    if (task.completed) {
+        li.classList.add("checked");
+    }
+    
+    // Create task due date display
+    const taskDate = document.createElement("span");
+    taskDate.innerText = taskDueDate ? `Due: ${taskDueDate}` : "No due date";
+    taskDate.classList.add("task-date"); // CSS class for styling
+    
+    // Delete button
+    const deleteBtn = document.createElement("span");
+    deleteBtn.classList.add("delete");
+    deleteBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        deleteTask(task.id);
+    });
+
+    li.appendChild(deleteBtn);
+    taskList.appendChild(li);
+}
+
 
 // Implement toggleComplete and deleteTask (similar to before, but using todosCollection)
 // async function toggleComplete(taskId) {
@@ -206,10 +216,16 @@ async function toggleComplete(taskId) {
 
         if (docSnapshot.exists()) {
             const currentData = docSnapshot.data();
+            const updatedStatus = !currentData.completed;
             await updateDoc(taskRef, {
-                completed: !currentData.completed  // Toggle completion status
+                completed: updatedStatus  // Toggle completion status
             });
-            displayTasks();  // Refresh the UI
+
+
+            const taskElement = document.querySelector(`[data-id="${taskId}"]`);
+            if (taskElement) {
+                taskElement.classList.toggle("checked", updatedStatus);
+            }  
         }
     } catch (e) {
         console.error("Error updating document: ", e);
@@ -220,7 +236,10 @@ async function deleteTask(taskId) {
     try {
         const taskRef = doc(db, 'users', auth.currentUser.uid, 'todos', taskId);
         await deleteDoc(taskRef);  // Deletes the task permanently from Firestore
-        displayTasks();  // Refresh the UI
+        const taskElement = document.querySelector(`[data-id="${taskId}"]`);
+        if (taskElement) {
+            taskElement.remove();
+        } 
     } catch (e) {
         console.error("Error removing document: ", e);
     }
