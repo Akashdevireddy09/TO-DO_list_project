@@ -10,11 +10,11 @@ const firebaseConfig = {
     storageBucket: "mytodolist-fa068.firebasestorage.app",
     messagingSenderId: "1037050677970",
     appId: "1:1037050677970:web:1270451c9d9f1024abfb0b",
-    measurementId: "G-E4N3XBX79H" // Optional, if you're using Analytics
+    measurementId: "G-E4N3XBX79H" // Optional
   };
 
 
-// Initialize Firebase
+// Initializing our Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -42,7 +42,7 @@ onAuthStateChanged(auth, async (user) => {  // Pass 'auth' to onAuthStateChanged
         todosCollection = collection(db, 'users', user.uid, 'todos'); // Use collection() from modular SDK
 
         // Call displayTasks() or other functions to load user-specific data.
-        displayTasks(); // Make sure displayTasks() is adapted to load data only for the current user.
+        displayTasks(); 
     }
 });
 
@@ -67,61 +67,6 @@ async function addTask() {
     }
 }
 
-// async function displayTasks() {
-//     if (!todosCollection) return;
-  
-//     listContainer.innerHTML = "";
-  
-//     try {
-//       const querySnapshot = await getDocs(todosCollection);
-//       querySnapshot.forEach((doc) => {
-//         const taskData = doc.data();
-//         const taskId = doc.id;
-//         const taskElement = document.createElement("li");
-  
-//         // Check if the task is overdue
-//         const isOverdue = taskData.date && new Date(taskData.date) < new Date();
-  
-//         // Add the "overdue" class if the task is overdue
-//         if (isOverdue) {
-//           taskElement.classList.add("overdue");
-//         }
-  
-//         // Check if the task is completed and add the 'checked' class accordingly
-//         if (taskData.completed) {
-//           taskElement.classList.add("checked");
-//         }
-  
-//         taskElement.innerHTML = `
-//           <span>${taskData.text} - ${taskData.date}</span>
-//           <span data-id="${taskId}" class="delete-icon"></span>
-//         `;
-  
-//         // Add event listener to toggle "checked" class on click
-//         taskElement.addEventListener("click", async () => {
-//           taskElement.classList.toggle("checked");
-//           const updatedCompleted = taskElement.classList.contains("checked");
-  
-//           // Update Firestore
-//           await updateDoc(doc(todosCollection, taskId), {
-//             completed: updatedCompleted,
-//           });
-//         });
-  
-//         // Add event listener for delete functionality
-//         const deleteIcon = taskElement.querySelector(".delete-icon");
-//         deleteIcon.addEventListener("click", async (event) => {
-//           event.stopPropagation(); // Prevent task toggle on delete click
-//           await deleteDoc(doc(todosCollection, taskId));
-//           displayTasks(); // Refresh the list after deletion
-//         });
-  
-//         listContainer.appendChild(taskElement);
-//       });
-//     } catch (e) {
-//       console.error("Error getting documents: ", e);
-//     }
-//   }
   
 addTaskButton.addEventListener("click", addTask);
 
@@ -165,9 +110,9 @@ function appendTask(task) {
         li.classList.add("overdue");
     }
     
-    if (task.completed) {
-        li.classList.add("checked");
-    }
+    // if (task.completed) {
+    //     li.classList.add("checked");
+    // }
     
     // Create task due date display
     const taskDate = document.createElement("span");
@@ -187,27 +132,6 @@ function appendTask(task) {
 }
 
 
-// Implement toggleComplete and deleteTask (similar to before, but using todosCollection)
-// async function toggleComplete(taskId) {
-//   try {
-//       const db = getFirestore();
-//       const taskRef = doc(db, 'users', auth.currentUser.uid, 'todos', taskId); // Use doc() from modular SDK
-
-//       // Get the current document data
-//       const docSnapshot = await getDoc(taskRef);
-//       if (docSnapshot.exists()) {
-//           const currentData = docSnapshot.data();
-//           await updateDoc(taskRef, {
-//               completed: !currentData.completed
-//           });
-//           displayTasks();
-//       } else {
-//           console.log("No such document!");
-//       }
-//   } catch (e) {
-//       console.error("Error updating document: ", e);
-//   }
-// }
 
 async function toggleComplete(taskId) {
     try {

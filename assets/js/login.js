@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";  // Optional, if using Analytics
 
 
@@ -16,8 +16,26 @@ const firebaseConfig = {
     // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); // Initialize Firebase Authentication
+auth.languageCode='en'
 const loginForm = document.getElementById('login-form');
 const errorMessage = document.getElementById('error-message');
+const provider=new GoogleAuthProvider();
+
+const googleLogin = document.getElementById("google-login-btn");
+
+googleLogin.addEventListener("click", function() {
+    signInWithPopup(auth, provider)
+        .then((result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const user = result.user;
+            console.log(user);
+            window.location.href = "index.html";
+        }).catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.error(`Error Code: ${errorCode}, Error Message: ${errorMessage}`);
+        });
+});
 
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();

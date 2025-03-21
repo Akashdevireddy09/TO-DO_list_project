@@ -6,7 +6,6 @@
   font-family: 'Poppins','sans-serif';
   box-sizing: border-box;
 }
-
 .container{
   width: 100%;
   min-height: 100vh;
@@ -21,6 +20,7 @@
   padding: 40px 30px 70px;
   border-radius: 10px;
   box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 .todo_app h2{
   display:flex;
@@ -37,7 +37,7 @@
   align-items:left;
   justify-content: space-between;
   /* border: 1px solid #000; */
-  height:250px;
+  height:200px;
 }
 #input_task  {
   padding: 8px;
@@ -125,7 +125,9 @@ ul li span{
 .task-date {
   font-size: 14px;
   color: #666;
-  margin-left: 10px;
+  display:flex;
+  align-items: center;
+  z-index: 999;
 }
 ul li.checked{
     color:#555;
@@ -142,4 +144,13 @@ ul li.overdue {
   border: 2px solid red; 
   color: red;
   font-weight: bold; 
+}
+
+#logout_button {
+  position: absolute;
+  bottom: 20px; /* Position it 20px from the bottom (adjust as needed) */
+  left: 50%;     /* Move it to the horizontal center */
+  transform: translateX(-50%); /* Center-align it horizontally */
+  cursor: pointer;
+  box-shadow: 5px 5px 10px black;
 }

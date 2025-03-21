@@ -64,6 +64,66 @@
         color: red;
         margin-top: 5px;
     }
+    /* Center the input container */
+.input {
+  display: flex;
+  flex-direction: column;
+    text-align: center;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+/* Stylish Separator */
+.separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0;
+    color: #888;
+    font-size: 14px;
+    font-weight: bold;
+    position: relative;
+}
+
+.separator::before,
+.separator::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #ccc;
+    margin: 0 10px;
+}
+
+/* Google Button Styling */
+.google-button {
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    padding: 10px 15px;
+    background: white;
+    color: #444;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Google Button Hover Effect */
+.google-button:hover {
+    background: #f1f1f1;
+    transform: translateY(-2px);
+}
+
+/* Google Logo Inside Button */
+.google-button img {
+    margin-right: 10px;
+}
+
   </style>
 </head>
 <body>
@@ -82,7 +142,21 @@
         <button type="submit">Login</button>
       </div>
       <div id="error-message" class="error-message"></div>
+      <div class="input">
+        <div class="separator">
+          <span>or</span>
+      </div>
+      
+      <button id="google-login-btn" class="google-button">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" 
+             alt="Google Logo" width="20">
+        Login with Google
+     </button>
+     
+     
+      </div>
       <p>Don't have an account? <a href="register.html">Register</a></p> <!-- Link to registration page -->
+      
     </form>
   </div>
 

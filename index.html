@@ -9,6 +9,7 @@
   </head>
   <body>
      <div class="container">
+      
       <div class="todo_app">
         <h2>TO-DO LIST <img src="assets\images\logo.png" alt="todo_list_logo"> </h2>
         <div class="row">
@@ -17,7 +18,7 @@
           <h4>Target date:</h4>
           <input type="date" id="input_date">
           <button id="add_task_button" onclick="addTask()">Add Task</button>
-          <button id="logout_button">Logout</button>
+          <!-- <button id="logout_button">Logout</button> -->
         </div>
 
         <ul id="list_container"> 
@@ -26,6 +27,7 @@
           <li>Task 3  </li>-->
 
         </ul> 
+        <button id="logout_button">LogOut</button>
       </div>
      </div>
 
@@ -59,12 +61,14 @@
 
       // Authentication Check and Logout
       onAuthStateChanged(auth, (user) => {
+        document.body.style.display = "block";
         if (!user) {
           // Redirect to login if not authenticated
           window.location.replace('login.html');
 
         } else {
           // User is signed in.  You can access user.uid here.
+          document.body.style.display = "block";
           console.log("User is logged in:", user.uid);
           // Call displayTasks() or other functions to load user-specific data.
           // Make sure displayTasks() is adapted to load data only for the current user.
