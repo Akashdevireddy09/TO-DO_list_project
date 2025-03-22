@@ -14,8 +14,8 @@
 }
 .todo_app{
   background-color: #ffffff;
-  width: 150%;
-  max-width:540px;
+  width: 250%;
+  max-width:740px;
   margin:50px auto auto;
   padding: 40px 30px 70px;
   border-radius: 10px;
@@ -56,6 +56,8 @@
   padding: 8px;
   margin: 3px;
   border-radius: 10px;
+  border-color:black;
+  box-shadow: 1px 1px 2px black;
 }
 
 #logout_button{
@@ -80,6 +82,9 @@ ul li{
   margin:5px;
   border-radius:20px;
   position:relative;
+  display: flex; /* Use flexbox */
+  justify-content: space-between; /* Space text and icons properly */
+  align-items: center;
 }
 
 ul li::before{
@@ -96,18 +101,56 @@ ul li::before{
     left:8px;
 }
 
-ul li span{
-  content:'';
-  position:absolute;
-  width:25px;
-  height:25px;
-  border-radius:50%;
-  background-image:url(images/delete.jpg); 
-  background-size:cover;
-  background-position:center;
-  top:12px;
-  right:8px;
+.button-container {
+  display: flex;
+  gap: 10px; /* Add space between buttons */
+  align-items: center;
+  margin-left: auto; /* Push buttons to the right */
 }
+
+.edit, .delete {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: block;
+}
+
+.edit {
+  background-image: url(images/edit.png);
+}
+
+.delete {
+  background-image: url(images/trash.png);
+}
+
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+  box-shadow:10px 10px 25px rgba(0, 0, 0, 0.1);
+  border:1px solid black;
+  width:540px;
+}
+
+.popup input {
+  width: 100%;
+  height:50px;
+  margin-bottom: 10px;
+}
+
+/* .popup button {
+  background-image: url(images/checkmark.png);
+  padding: 5px 10px;
+} */
+ 
 
 /* ul li.task-date::after{
    
@@ -153,4 +196,21 @@ ul li.overdue {
   transform: translateX(-50%); /* Center-align it horizontally */
   cursor: pointer;
   box-shadow: 5px 5px 10px black;
+}
+
+.save {
+  display: flex;
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  cursor: pointer; /* Change cursor to pointer for better UX */
+  margin-left: auto; /* Space between input and checkmark */
+  
+ 
+}
+
+.save svg {
+  width: 100%; /* Make SVG fill the button */
+  height: 100%; /* Adjust size of the icon */
+  color: black; /* Change color as needed */
+  align-self: flex-end;
 }

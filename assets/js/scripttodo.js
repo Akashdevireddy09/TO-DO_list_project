@@ -35,6 +35,7 @@ onAuthStateChanged(auth, async (user) => {  // Pass 'auth' to onAuthStateChanged
         window.location.href = 'login.html';
     } else {
         // User is signed in. You can access user.uid here.
+        document.body.style.display = "block";
         console.log("User is logged in:", user.uid);
 
         // Initialize todosCollection here, after ensuring the user is logged in
@@ -103,7 +104,15 @@ function appendTask(task) {
 
     const taskDueDate = task.date || inputDate.value; // Use stored task date or input date
 
-    const isOverdue = taskDueDate && new Date(taskDueDate) < new Date();
+      // const isOverdue = taskDueDate && new Date(taskDueDate) < new Date();
+      const today = new Date();
+       today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 for accurate date comparison
+
+     const taskDue = new Date(taskDueDate);
+      taskDue.setHours(23, 59, 59, 999); // Set taskDueDate to the end of that day
+
+      const isOverdue = taskDue < today;
+
     
     // Add the "overdue" class if the task is overdue
     if (isOverdue) {
@@ -115,20 +124,28 @@ function appendTask(task) {
     // }
     
     // Create task due date display
-    const taskDate = document.createElement("span");
-    taskDate.innerText = taskDueDate ? `Due: ${taskDueDate}` : "No due date";
-    taskDate.classList.add("task-date"); // CSS class for styling
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("button-container"); // New container for icons
     
-    // Delete button
+    const editBtn = document.createElement("span");
+    editBtn.classList.add("edit");
+    editBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openEditPopup(task);
+    });
+    buttonContainer.appendChild(editBtn);
+    
     const deleteBtn = document.createElement("span");
     deleteBtn.classList.add("delete");
     deleteBtn.addEventListener("click", (event) => {
         event.stopPropagation();
         deleteTask(task.id);
     });
-
-    li.appendChild(deleteBtn);
+    buttonContainer.appendChild(deleteBtn);
+    
+    li.appendChild(buttonContainer); // Append the button container to the list item
     taskList.appendChild(li);
+    
 }
 
 
@@ -151,6 +168,40 @@ async function toggleComplete(taskId) {
                 taskElement.classList.toggle("checked", updatedStatus);
             }  
         }
+    } catch (e) {
+        console.error("Error updating document: ", e);
+    }
+}
+
+function openEditPopup(task) {
+    const popup = document.createElement("div");
+    popup.classList.add("popup");
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = task.text;
+
+    const saveButton = document.createElement("span");
+    saveButton.classList.add("save");
+    saveButton.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M7.5 10.5l-2-2a.5.5 0 0 0-.707.707l2.5 2.5a.5.5 0 0 0 .707 0l5-5a.5.5 0 0 0-.707-.707l-4.5 4.5-1.5-1.5z"/></svg>'; // Checkmark SVG
+    saveButton.addEventListener("click", async () => {
+        await updateTask(task.id, input.value);
+        document.body.removeChild(popup);
+    });
+   
+
+    popup.appendChild(input);
+    popup.appendChild(saveButton);
+    document.body.appendChild(popup);
+}
+
+async function updateTask(taskId, newText) {
+    try {
+        const taskRef = doc(db, 'users', auth.currentUser .uid, 'todos', taskId);
+        await updateDoc(taskRef, {
+            text: newText  // Update task text
+        });
+        displayTasks(); // Refresh the task list
     } catch (e) {
         console.error("Error updating document: ", e);
     }
