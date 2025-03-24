@@ -58,6 +58,7 @@ async function addTask() {
                 date: taskDate,
                 completed: false
             });
+            
             input.value = "";
             inputDate.value = "";
 
@@ -70,6 +71,9 @@ async function addTask() {
 
   
 addTaskButton.addEventListener("click", addTask);
+addTaskButton.addEventListener("click", function() {
+    $.notify("Task added successfully!", { className: "success", position: "top center" });
+});
 
 async function displayTasks() {
     if (!auth.currentUser) return;
@@ -100,7 +104,19 @@ function appendTask(task) {
     }
 
     // Click event to toggle completion
-    li.addEventListener("click", () => toggleComplete(task.id));
+    li.addEventListener("click", function () {
+        toggleComplete(task.id); // First, toggle the task completion
+    
+        // Then, show notification
+        $.notify("Wohoo..! You did it, congrats buddy", { 
+            className: "success", 
+            position: "top center" 
+        });
+    });
+    
+    
+
+    
 
     const taskDueDate = task.date || inputDate.value; // Use stored task date or input date
 
@@ -141,6 +157,10 @@ function appendTask(task) {
         event.stopPropagation();
         deleteTask(task.id);
     });
+    deleteBtn.addEventListener("click", function() {
+        $.notify("Task deleted successfully!", { className: "error", position: "top center" });
+    });
+    
     buttonContainer.appendChild(deleteBtn);
     
     li.appendChild(buttonContainer); // Append the button container to the list item
@@ -179,7 +199,9 @@ function openEditPopup(task) {
 
     const input = document.createElement("input");
     input.type = "text";
+    input.date="date";
     input.value = task.text;
+    input.value = task.date;
 
     const saveButton = document.createElement("span");
     saveButton.classList.add("save");
