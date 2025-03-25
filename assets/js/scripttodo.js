@@ -95,9 +95,23 @@ function appendTask(task) {
 
     // Create list item
     const li = document.createElement("li");
-    li.innerText = task.text;
-    li.setAttribute("data-id", task.id); // Store task ID in the element
-   
+    li.setAttribute("data-id", task.id); // Store task ID
+    li.setAttribute("data-date", task.date); // Store task due date for sorting
+
+    // Create task text
+    const taskText = document.createElement("span");
+    taskText.innerText = task.text;
+
+    // Create due date as a subscript
+    // const dueDate = document.createElement("div");
+    // dueDate.innerText = ` ${task.date}`;
+    // dueDate.classList.add("due-date"); // Add a class for styling
+
+    // Append elements inside list item
+    li.appendChild(taskText);
+    li.appendChild(document.createElement("br")); // Line break for better formatting
+    
+
 
     if (task.completed) {
         li.classList.add("checked");
@@ -114,32 +128,25 @@ function appendTask(task) {
         });
     });
     
-    
+    // const taskDueDate = task.date || inputDate.value; // Use stored task date or input date
 
-    
-
-    const taskDueDate = task.date || inputDate.value; // Use stored task date or input date
-
-      // const isOverdue = taskDueDate && new Date(taskDueDate) < new Date();
+    const taskDue = new Date(task.date);
+      taskDue.setHours(23, 59, 59, 999);  
+    // const isOverdue = taskDueDate && new Date(taskDueDate) < new Date();
       const today = new Date();
        today.setHours(0, 0, 0, 0); // Reset time to 00:00:00 for accurate date comparison
 
-     const taskDue = new Date(taskDueDate);
-      taskDue.setHours(23, 59, 59, 999); // Set taskDueDate to the end of that day
+      
 
-      const isOverdue = taskDue < today;
-
-    
-    // Add the "overdue" class if the task is overdue
-    if (isOverdue) {
+      if (taskDue < today) {
         li.classList.add("overdue");
     }
     
-    // if (task.completed) {
-    //     li.classList.add("checked");
-    // }
-    
     // Create task due date display
+    const dueDate = document.createElement("div");
+    dueDate.innerText = ` ${task.date}`;
+    dueDate.classList.add("due-date");
+    
     const buttonContainer = document.createElement("div");
     buttonContainer.classList.add("button-container"); // New container for icons
     
@@ -156,15 +163,27 @@ function appendTask(task) {
     deleteBtn.addEventListener("click", (event) => {
         event.stopPropagation();
         deleteTask(task.id);
-    });
-    deleteBtn.addEventListener("click", function() {
         $.notify("Task deleted successfully!", { className: "error", position: "top center" });
     });
-    
+    li.appendChild(dueDate);
     buttonContainer.appendChild(deleteBtn);
-    
-    li.appendChild(buttonContainer); // Append the button container to the list item
-    taskList.appendChild(li);
+    li.appendChild(buttonContainer);
+
+    //Inserting tasks in sorted Array
+    const items=Array.from(taskList.children); // Append the button container to the list item
+    let inserted=false;
+
+    for(let i=0;i<items.length;i++){
+        const existingTaskDate=new Date(items[i].getAttribute("data-date"));
+        if(taskDue < existingTaskDate){
+            taskList.insertBefore(li,items[i]);
+            inserted=true;
+            break;
+        }
+    }
+    if(!inserted){
+        taskList.appendChild(li);
+    } 
     
 }
 

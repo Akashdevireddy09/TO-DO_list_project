@@ -10,13 +10,54 @@
   width: 100%;
   min-height: 100vh;
   background-image: radial-gradient( circle farthest-corner at 10% 20%,  rgba(20,23,26,1) 0%, rgba(255,105,180,1) 90% );
-  padding:10px;
+  padding:0px;
+}
+
+.nav{
+  display: flex;
+  justify-content: flex-end; /* Aligns tabs to the right */
+  padding-top: 0px;
+  border-bottom: 2px solid #ccc; /* Optional: Adds a separator */
+  margin-top: 0px;
+}
+
+.nav-tabs {
+  display: flex;
+  flex-direction: row; /* Ensures horizontal alignment */
+  list-style: none;
+  padding-top: 0;
+  margin-right: 3px;
+  margin-top: 0px;
+  border: none;
+}
+
+.nav-tabs .nav-link {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  margin-left: 5px;
+  background-color: #f8f9fa;
+  text-decoration: none;
+  color: #333;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #fff;
+  border-bottom: 2px solid transparent; /* Active tab */
+}
+
+/* Styling the content area */
+.tab-content {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-top: none;
 }
 .todo_app{
   background-color: #ffffff;
-  width: 250%;
-  max-width:740px;
-  margin:50px auto auto;
+  width: 200%;
+  max-width:640px;
+  margin:10px auto auto;
   padding: 40px 30px 70px;
   border-radius: 10px;
   box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.3);
@@ -85,6 +126,7 @@ ul li{
   display: flex; /* Use flexbox */
   justify-content: space-between; /* Space text and icons properly */
   align-items: center;
+  position: relative;
 }
 
 ul li::before{
@@ -172,6 +214,16 @@ ul li::before{
   align-items: center;
   z-index: 999;
 }
+.due-date {
+  display: block; /* Makes it appear below the task text */
+  font-size: 10px;
+  color: gray;
+  margin-top: 6px;
+  margin-left:auto;
+  align-self: flex-end;
+
+}
+
 ul li.checked{
     color:#555;
     text-decoration: line-through;
@@ -214,3 +266,10 @@ ul li.overdue {
   color: black; /* Change color as needed */
   align-self: flex-end;
 }
+
+.bootstrap-scope {
+  all: unset; /* Reset all styles */
+  font-family: inherit; /* Keep existing font */
+}
+
+
