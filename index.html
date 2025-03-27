@@ -25,17 +25,19 @@
      <div class="container">
 
       <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Upcoming</button>
-          <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Completed</button>
-          <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Overdue</button>
+        <div class="nav-tabs">
+            <button class="tab-btn" data-filter="all" onclick="displayTasks('all')">All</button>
+            <button class="tab-btn" data-filter="upcoming" onclick="displayTasks('upcoming')">Upcoming</button>
+            <button class="tab-btn" data-filter="completed" onclick="displayTasks('completed')">Completed</button>
+            <button class="tab-btn" data-filter="overdue" onclick="displayTasks('overdue')">Overdue</button>
         </div>
-      </nav>
-      <!-- <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">Hi</div>
-        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">Hello</div>
-        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">Namaskar</div>
-      </div> -->
+    </nav>
+<!-- <ul id="task-list">
+        <li class="task upcoming">Go to Gym (2025-03-29)</li>
+        <li class="task completed">Help (2025-03-27)</li>
+        <li class="task overdue">Test test test (2025-03-26)</li>
+    </ul> -->
+      
       
       <div class="todo_app">
         <h2>TO-DO LIST <img src="assets\images\logo.png" alt="todo_list_logo"> </h2>

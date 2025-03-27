@@ -63,8 +63,12 @@ async function addTask() {
             inputDate.value = "";
 
             appendTask({id:docRef.id, text:taskText,date:taskDate,completed:false});
+            $.notify("Task added successfully!", { className: "success", position: "top center" });
+
         } catch (e) {
+            $.notify("Task cannot be empty!", { className: "error", position: "top center" });
             console.error("Error adding document: ", e);
+
         }
     }
 }
@@ -75,19 +79,45 @@ addTaskButton.addEventListener("click", function() {
     $.notify("Task added successfully!", { className: "success", position: "top center" });
 });
 
-async function displayTasks() {
-    if (!auth.currentUser) return;
+async function displayTasks(filterType = "all") {
+    try {
+        const user = auth.currentUser;
+        if (!user) return;
 
-    const taskList = document.getElementById("list_container");
-    taskList.innerHTML = ""; // Clear list initially
+        const querySnapshot = await getDocs(collection(db, 'users', user.uid, 'todos'));
+        const taskList = document.getElementById("list_container");
 
-    const tasksRef = collection(db, 'users', auth.currentUser.uid, 'todos');
-    const querySnapshot = await getDocs(tasksRef);
+        // Clear previous tasks
+        taskList.innerHTML = "";
 
-    querySnapshot.forEach((doc) => {
-        appendTask({ id: doc.id, ...doc.data() });
-    });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        querySnapshot.forEach((doc) => {
+            const task = doc.data();
+            const taskDue = new Date(task.date);
+            taskDue.setHours(23, 59, 59, 999);
+            const isOverdue = taskDue < today && !task.completed;
+            const isUpcoming = taskDue >= today && !task.completed;
+            const isCompleted = task.completed;
+
+            // Apply Filter
+            if (
+                (filterType === "overdue" && !isOverdue) ||
+                (filterType === "upcoming" && !isUpcoming) ||
+                (filterType === "completed" && !isCompleted)
+            ) {
+                return; // Skip tasks that don't match the filter
+            }
+
+            appendTask({ id: doc.id, ...task });
+        });
+
+    } catch (e) {
+        console.error("Error displaying tasks: ", e);
+    }
 }
+
 
 
 function appendTask(task) {
@@ -127,6 +157,7 @@ function appendTask(task) {
             position: "top center" 
         });
     });
+    taskList.appendChild(li); // Append the list item to the task list
     
     // const taskDueDate = task.date || inputDate.value; // Use stored task date or input date
 
@@ -138,9 +169,10 @@ function appendTask(task) {
 
       
 
-      if (taskDue < today) {
+       if (taskDue < today && !task.completed) {
         li.classList.add("overdue");
     }
+    
     
     // Create task due date display
     const dueDate = document.createElement("div");
@@ -165,8 +197,9 @@ function appendTask(task) {
         deleteTask(task.id);
         $.notify("Task deleted successfully!", { className: "error", position: "top center" });
     });
-    li.appendChild(dueDate);
     buttonContainer.appendChild(deleteBtn);
+
+    li.appendChild(dueDate);
     li.appendChild(buttonContainer);
 
     //Inserting tasks in sorted Array
@@ -195,32 +228,32 @@ async function toggleComplete(taskId) {
         const docSnapshot = await getDoc(taskRef);
 
         if (docSnapshot.exists()) {
-            const currentData = docSnapshot.data();
-            const updatedStatus = !currentData.completed;
-            await updateDoc(taskRef, {
-                completed: updatedStatus  // Toggle completion status
-            });
-
+            const updatedStatus = !docSnapshot.data().completed;
+            await updateDoc(taskRef, { completed: updatedStatus });
 
             const taskElement = document.querySelector(`[data-id="${taskId}"]`);
             if (taskElement) {
                 taskElement.classList.toggle("checked", updatedStatus);
-            }  
+            }
         }
     } catch (e) {
         console.error("Error updating document: ", e);
     }
 }
 
+
 function openEditPopup(task) {
     const popup = document.createElement("div");
     popup.classList.add("popup");
 
-    const input = document.createElement("input");
-    input.type = "text";
-    input.date="date";
-    input.value = task.text;
-    input.value = task.date;
+    const taskInput = document.createElement("input");
+taskInput.type = "text";
+taskInput.value = task.text;
+
+const dateInput = document.createElement("input");
+dateInput.type = "date";
+dateInput.value = task.date;
+
 
     const saveButton = document.createElement("span");
     saveButton.classList.add("save");
@@ -236,17 +269,16 @@ function openEditPopup(task) {
     document.body.appendChild(popup);
 }
 
-async function updateTask(taskId, newText) {
+async function updateTask(taskId, newText, newDate) {
     try {
-        const taskRef = doc(db, 'users', auth.currentUser .uid, 'todos', taskId);
-        await updateDoc(taskRef, {
-            text: newText  // Update task text
-        });
-        displayTasks(); // Refresh the task list
+        const taskRef = doc(db, 'users', auth.currentUser.uid, 'todos', taskId);
+        await updateDoc(taskRef, { text: newText, date: newDate });
+        displayTasks(); // Refresh UI
     } catch (e) {
         console.error("Error updating document: ", e);
     }
 }
+
 
 async function deleteTask(taskId) {
     try {
@@ -277,3 +309,62 @@ logoutButton.addEventListener("click", () => {
         console.error("Sign out error", error);
     });
 });
+
+//to load the respective class of the task on clicking the tab buttons.
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".tab-btn");
+    const taskList = document.getElementById("task-list");
+
+    function classifyTasks() {
+        const tasks = document.querySelectorAll(".task");
+        const today = new Date().toISOString().split("T")[0]; // Get today's date
+
+        tasks.forEach((task) => {
+            const taskText = task.innerText;
+            const match = taskText.match(/\((\d{4}-\d{2}-\d{2})\)$/); // Extract date from (YYYY-MM-DD)
+
+            if (match) {
+                const dueDate = match[1];
+                task.classList.remove("upcoming", "overdue"); // Reset classes
+
+                if (dueDate > today) {
+                    task.classList.add("upcoming");
+                } else if (dueDate < today) {
+                    task.classList.add("overdue");
+                }
+            }
+
+            if (task.classList.contains("checked")) {
+                task.classList.add("completed");
+            } else {
+                task.classList.remove("completed");
+            }
+        });
+    }
+
+    function filterTasks(filter) {
+        const tasks = document.querySelectorAll(".task");
+
+        tasks.forEach((task) => {
+            if (
+                (filter === "completed" && task.classList.contains("completed")) ||
+                (filter === "upcoming" && task.classList.contains("upcoming")) ||
+                (filter === "overdue" && task.classList.contains("overdue"))
+            ) {
+                task.style.display = "list-item";
+            } else {
+                task.style.display = "none";
+            }
+        });
+    }
+
+    buttons.forEach((button) => {
+        button.addEventListener("click", function () {
+            classifyTasks(); // Update task categories before filtering
+            filterTasks(button.getAttribute("data-filter"));
+        });
+    });
+
+    classifyTasks(); // Run once on page load
+});
+
