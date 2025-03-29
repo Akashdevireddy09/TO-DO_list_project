@@ -142,7 +142,7 @@ nav{
 
 #logout_button {
   background: linear-gradient(135deg, #007bff, #00d4ff);
-  border: ;
+  border:2px solid #000;
   color: black;
   padding: 10px 14px;
   margin:10px;
