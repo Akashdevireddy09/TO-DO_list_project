@@ -24,13 +24,6 @@ background-color: #000;
   padding:0px; 
 }
 
-.nav{
-  display: flex;
-  justify-content: flex-end; /* Aligns tabs to the right */
-  padding-top: 0px;
-  border-bottom: 2px solid #ccc; /* Optional: Adds a separator */
-  margin-top: 0px;
-}
 
 
 
@@ -55,14 +48,6 @@ background-color: #000;
   align-items:center;
   margin-bottom: 20px;
 }
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom: 30px;
-  /* background: linear-gradient(to right, #6a11cb, #2575fc); */
-
-}
 .logo{
   display:flex;
   align-items:center;
@@ -80,7 +65,15 @@ nav{
   margin-left: 10px;
   width:30px;
 }
+nav{
+  display:flex;
+  flex-direction: row;
+  justify-content:space-between;
+  align-items:center;
+  padding: 10px 20px;
+  /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 
+}
 /* Overall Nav Bar Styling */
 .nav-tabs {
   display: flex;
@@ -88,8 +81,8 @@ nav{
   justify-content: center;
   padding: 10px 0;
   /* push the tabs to end; */
-  margin-left: auto; /* Pushes the tabs to the right */
-  margin-right:20px;
+  margin-right: auto; /* Pushes the tabs to the right */
+  margin-left:20px;
   margin-bottom: 20px;
 }
 /* 
@@ -147,6 +140,37 @@ nav{
   transform: scale(0.95);
 }
 
+#logout_button {
+  background: linear-gradient(135deg, #007bff, #00d4ff);
+  border: ;
+  color: black;
+  padding: 10px 14px;
+  margin:10px;
+  border-radius: 15px 15px 15px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15);
+  font-weight: bold;
+  min-width: 90px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+#logout_button:hover {
+  background: linear-gradient(135deg, #0056b3, #00aaff);
+  transform: translateY(-2px);
+  box-shadow: 2px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+#logout_button:active {
+  transform: scale(0.95);
+}
+
+
 
 .todo_app h2 img{
   width:30px;
@@ -179,13 +203,14 @@ nav{
   border-radius: 10px;
   border-color:black;
   box-shadow: 1px 1px 2px black;
+  font-weight:bold;
 }
 
-#logout_button{
+/* #logout_button{
   padding: 8px;
   margin: 3px;
   border-radius: 10px;
-}
+} */
 #list_container{
   margin:10px;
 }
@@ -331,30 +356,49 @@ ul li.overdue {
   font-weight: bold; 
 }
 
-#logout_button {
-  position: absolute;
-  bottom: 20px; /* Position it 20px from the bottom (adjust as needed) */
-  left: 50%;     /* Move it to the horizontal center */
-  transform: translateX(-50%); /* Center-align it horizontally */
-  cursor: pointer;
-  box-shadow: 5px 5px 10px black;
+
+
+/* Keep existing .popup styles */
+
+/* Add styles for the button container */
+.popup-button-row {
+  display: flex;            /* Arrange buttons horizontally */
+  justify-content: flex-end; /* Push buttons to the right edge of the row */
+  align-items: center;     /* Vertically align buttons in the middle */
+  gap: 10px;               /* Add space BETWEEN the buttons */
+  margin-top: 15px;        /* Add space above the button row */
 }
 
+/* Adjust styles for the save button */
 .save {
-  display: flex;
-  width: 30px; /* Adjust size as needed */
-  height: 30px; /* Adjust size as needed */
-  cursor: pointer; /* Change cursor to pointer for better UX */
-  margin-left: auto; /* Space between input and checkmark */
-  
- 
+  padding: 6px 12px; /* Adjust padding for desired size */
+  border: 1px solid #ccc;
+  background-color: #f8f8f8;
+  color: #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.save:hover {
+  background-color: #eee;
+  border-color: #bbb;
 }
 
-.save svg {
-  width: 100%; /* Make SVG fill the button */
-  height: 100%; /* Adjust size of the icon */
-  color: black; /* Change color as needed */
-  align-self: flex-end;
+/* Style the cancel button consistently */
+.cancel-button {
+    padding: 6px 12px; /* Adjust padding for desired size */
+    border: 1px solid #ccc;
+    background-color: #f8f8f8;
+    color: #555;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.cancel-button:hover {
+    background-color: #eee;
+    border-color: #bbb;
 }
 
 .bootstrap-scope {

@@ -26,11 +26,13 @@
 
       <nav>
         <div class="nav-tabs">
-            <button class="tab-btn" data-filter="all" onclick="displayTasks('all')">All</button>
-            <button class="tab-btn" data-filter="upcoming" onclick="displayTasks('upcoming')">Upcoming</button>
-            <button class="tab-btn" data-filter="completed" onclick="displayTasks('completed')">Completed</button>
-            <button class="tab-btn" data-filter="overdue" onclick="displayTasks('overdue')">Overdue</button>
+            <button class="tab-btn" data-filter="all" >All</button>
+            <button class="tab-btn" data-filter="upcoming">Upcoming</button>
+            <button class="tab-btn" data-filter="completed" >Completed</button>
+            <button class="tab-btn" data-filter="overdue" >Overdue</button>
         </div>
+
+        <button id="logout_button">LogOut</button>
     </nav>
 <!-- <ul id="task-list">
         <li class="task upcoming">Go to Gym (2025-03-29)</li>
@@ -46,7 +48,7 @@
           <input type="text" id="input_task" placeholder="Add your task">
           <h4>Target date:</h4>
           <input type="date" id="input_date">
-          <button id="add_task_button" onclick="addTask()">Add Task</button>
+          <button id="add_task_button">Add Task</button>
           <!-- <button id="logout_button">Logout</button> -->
         </div>
 
@@ -56,7 +58,7 @@
           <li>Task 3  </li>-->
 
         </ul> 
-        <button id="logout_button">LogOut</button>
+        
       </div>
      </div>
 
@@ -120,7 +122,7 @@
           });
       });
     </script>
-    <script type="module" src=".\scripttodo.js" defer></script>
+    <script type="module" src="scripttodo.js" defer></script>
 
     
   </body>
