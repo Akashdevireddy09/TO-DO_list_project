@@ -71,30 +71,47 @@
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+  margin-top:80px;
+
 }
 .todo_app{
+  display:flex;
+  flex-direction: column;
   background-color: #ffffff;
   width: 250%;
   max-width:400px;
   height: 350px;
-  /* margin:10px auto auto; */
-  margin-right: 30px;
-  padding: 40px 30px 70px;
+  margin-right: 50px;
+  padding: 20px 30px 70px;
   border-radius: 10px;
   box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.3);
-  position: relative;
+  position: fixed;
+  top: 30%;
+  left: 40px;
+  padding-top: 80px;
   
+}
+h5{
+  font-size: 10px;
+  color: #000;
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adds nice spacing between text and icon */
 }
 
 /* Left input section */
 .left-pane {
   flex: 1;
   max-width: 350px;
+  height:300px;
   display: flex;
   flex-direction: column;
-  position: sticky;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  /* border-right: 1px solid black; */
+  
 }
 /* Right task display section */
 .right-pane {
@@ -104,35 +121,56 @@
   border-radius: 10px;
   box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.3);
   position: relative;
+  border-left: 0.2px solid #555;
+  padding-left:20px;
+  border-left: 1px solid black;
+ 
 }
 .todo_app h2{
   display:flex;
-  align-items:center;
+  align-items:top;
   margin-bottom: 20px;
 }
-.logo{
-  display:flex;
-  align-items:center;
-  margin-bottom: 30px;
-  gap:10%;
-  font-size:20px;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Better spacing than percentage */
+  margin-bottom: 15px;
+  font-size: 10px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 15px 15px 25px rgba(0, 0, 0, 0.3);
 }
-.logo img{
-  width: 40px;
-  height: 40px;
+
+.logo img {
+  width: 30px;
+  height: 30px;
 }
-.logo h2{
-  font-size: 30px;
+
+.logo h2 {
+  font-size: 20px;
   color: #000;
-  margin-left: 10px;
-  width:30px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adds nice spacing between text and icon */
 }
+
 nav{
   display:flex;
   flex-direction: row;
   justify-content:space-between;
   align-items:center;
   padding: 10px 20px;
+  border-bottom: 0.5px solid #555;
+  background: linear-gradient(to right, #4a90e2, #5aa9f4);
+
+  width: 100%;
+  height:80px;
+  position: fixed;
+  top: 0;
+  z-index: 10;
   /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 
 }
@@ -143,8 +181,8 @@ nav{
   justify-content: center;
   padding: 10px 0;
   /* push the tabs to end; */
-  margin-right: auto; /* Pushes the tabs to the right */
-  margin-left:20px;
+  margin-left: auto; /* Pushes the tabs to the right */
+  margin-right:20px;
   margin-bottom: 20px;
 }
 /* 
@@ -193,7 +231,7 @@ nav{
 .nav-tabs button.active {
   background: #4a90e2;
   color: white;
-  border-color: #4a90e2;
+  border:0.2px solid #000;
   box-shadow: 2px 4px 10px rgba(74, 144, 226, 0.4);
 }
 
