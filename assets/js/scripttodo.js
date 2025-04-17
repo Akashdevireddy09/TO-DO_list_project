@@ -24,14 +24,15 @@ const input = document.getElementById("input_task");
 const inputDate = document.getElementById("input_date");
 const listContainer = document.getElementById("list_container");
 const addTaskButton = document.getElementById("add_task_button");
-
 // Firestore Collection Reference (User-Specific)
 let todosCollection;
 let currentUserId;
 let currentFilter = "all"; // Track the currently active filter ('all', 'upcoming', etc.)
+let eventListenersInitialized = false; // Flag to track if event listeners are already set up
 
 // Authentication Check
-onAuthStateChanged(auth, async (user) => {  // Pass 'auth' to onAuthStateChanged
+onAuthStateChanged(auth, async (user) => {
+    console.log("Auth state changed, user:", user ? user.uid : "logged out");
     if (!user) {
         // Redirect to login if not authenticated
         console.log("User not logged in, redirecting...");
@@ -41,19 +42,28 @@ onAuthStateChanged(auth, async (user) => {  // Pass 'auth' to onAuthStateChanged
     } else {
         currentUserId = user.uid;
         console.log("User is logged in:", currentUserId);
-       // User is signed in. You can access user.uid here.
         document.body.style.display = "block";
         
-
-        // Initialize todosCollection here, after ensuring the user is logged in
-        const db = getFirestore();
-        todosCollection = collection(db, 'users', user.uid, 'todos'); // Use collection() from modular SDK
-
-        // Call displayTasks() or other functions to load user-specific data.
+        // Check if tasks are already loaded
+        if (window.tasksAlreadyLoaded) {
+            console.log("Tasks already loaded, preventing duplicate load");
+            return;
+        }
+        
+        // Initialize todosCollection only once
+        todosCollection = collection(db, 'users', user.uid, 'todos');
+        
+        // Load tasks and set up event listeners
         await displayTasks(currentFilter);
-        setupEventListeners(); 
+        if (!eventListenersInitialized) {
+            setupEventListeners();
+            eventListenersInitialized = true;
+        }
+        
+        window.tasksAlreadyLoaded = true;  // SET FLAG AFTER LOADING ONCE
     }
 });
+
 
 function filterTasks(filter) {
     const tasks = document.querySelectorAll(".task");
@@ -71,7 +81,10 @@ function filterTasks(filter) {
     });
 }
 
+//setting up all event listeners for the application
 function setupEventListeners() {
+    console.log("Setting up event listeners...");
+    
     // Add Task Button
     addTaskButton.addEventListener("click", addTask);
 
@@ -88,6 +101,16 @@ function setupEventListeners() {
             addTask();
         }
     });
+
+     // Set minimum date for the task input date field to today
+     const inputDate = document.getElementById("input_date");
+     const today = new Date();
+     const formattedDate = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+     inputDate.setAttribute('min', formattedDate);
+     
+     // Add required attribute to input date field
+     inputDate.setAttribute('required', 'true');
+     
 
     // Logout Button - COMBINED version (use this and remove the duplicate)
     const logoutButton = document.getElementById("logout_button");
@@ -115,22 +138,45 @@ function setupEventListeners() {
                 
                 const filterType = this.dataset.filter; // Get filter from data-filter attribute
                 console.log("Filter button clicked:", filterType);
-                displayTasks(filterType); // Reload tasks with the new filter
+                if (filterType !== currentFilter) {
+                    displayTasks(filterType); // Reload tasks with the new filter
+                }
+                       
             });
         });
     } else {
         console.warn("No filter buttons with class 'tab-btn' were found.");
     }
 
-    // Move any other event listeners from the bottom of the script here
-    // For example, the buttons.forEach for filterTasks should be here too
-    const buttons = document.querySelectorAll(".tab-btn");
-    buttons.forEach((button) => {
-        button.addEventListener("click", function () {
-            const filterType = this.getAttribute("data-filter");
-            displayTasks(filterType);
-        });
+ 
+
+    // Date range filter functionality
+    const fromDateInput = document.querySelector('.from_date input');
+    const toDateInput = document.querySelector('.to_date input');
+    const searchButton = document.querySelector('.search_button');
+    const resetButton = document.querySelector('.reset_button');
+    
+    // Search button click handler
+    searchButton.addEventListener('click', () => {
+        const fromDate = fromDateInput.value;
+        const toDate = toDateInput.value;
+        
+        if (fromDate && toDate) {
+            filterTasksByDateRange(fromDate, toDate);
+        } else {
+            $.notify("Please select both start and end dates", { className: "warn", position: "top center" });
+        }
     });
+    
+    // Reset button click handler
+    resetButton.addEventListener('click', () => {
+        fromDateInput.value = '';
+        toDateInput.value = '';
+        displayTasks(currentFilter); // Reset to current filter view
+        $.notify("Date filter reset", { className: "info", position: "top center" });
+    });
+    
+
 }
 
 
@@ -142,6 +188,25 @@ async function addTask() {
         $.notify("Task cannot be empty!", { className: "error", position: "top center" });
         return; // Exit if task is empty
     }
+
+    // Validate that date is provided
+    if (!taskDate) {
+        $.notify("Please select a due date for your task!", { className: "error", position: "top center" });
+        return; // Exit if date is empty
+    }
+
+    // Check if date is not in the past
+    const selectedDate = new Date(taskDate);
+    selectedDate.setHours(0, 0, 0, 0);
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+        $.notify("Due date cannot be in the past!", { className: "error", position: "top center" });
+        return; // Exit if date is in the past
+    }
+    
     if (!todosCollection) {
         $.notify("Error: User collection not ready.", { className: "error", position: "top center" });
         return;
@@ -171,9 +236,6 @@ async function addTask() {
         }
     }
 }
-
-  
-addTaskButton.addEventListener("click", addTask);
 
 
 /**
@@ -294,9 +356,10 @@ async function displayTasks(filterType = "all") {
 
     }
 }
-
-
-
+/**
+ * Appends a task to the task list in the DOM
+ * @param {Object} task - The task object to append
+ */
 function appendTask(task) {
     
     // Create list item
@@ -368,7 +431,6 @@ function appendTask(task) {
     
     if (task.completed) {
         // If already completed, button becomes "Archive"
-        // deleteOrArchiveBtn.innerHTML = ''; // Archive box icon
         // deleteOrArchiveBtn.title = "Archive Task";
         deleteOrArchiveBtn.addEventListener("click", async (event) => {
             event.stopPropagation();
@@ -377,7 +439,6 @@ function appendTask(task) {
         });
     } else {
         // If not completed, button is "Delete Permanently"
-        // deleteOrArchiveBtn.innerHTML = '×'; // Cross icon
         // deleteOrArchiveBtn.title = "Delete Task Permanently";
         deleteOrArchiveBtn.addEventListener("click", async (event) => {
             event.stopPropagation();
@@ -407,6 +468,10 @@ function appendTask(task) {
 listContainer.appendChild(li);
 }
 
+/**
+ * Toggles the completion status of a task
+ * @param {string} taskId - The ID of the task to toggle
+ */
 
 async function toggleComplete(taskId) {
         try {
@@ -452,6 +517,11 @@ async function toggleComplete(taskId) {
             $.notify("Error updating task status.", { className: "error", position: "top center" });
         }
     }
+
+/**
+ * Permanently deletes a task
+ * @param {string} taskId - The ID of the task to delete
+ */
 
 async function deleteTaskPermanently(taskId) {
         if (!todosCollection) return;
@@ -576,7 +646,12 @@ function openEditPopup(task) {
     taskInput.focus();
 }
 
-
+/**
+ * Updates a task's text and date in Firestore
+ * @param {string} taskId - The ID of the task to update
+ * @param {string} newText - The new text for the task
+ * @param {string} newDate - The new date for the task
+ */
 
 async function updateTask(taskId, newText, newDate) {
     if (!todosCollection) return;
@@ -595,6 +670,10 @@ async function updateTask(taskId, newText, newDate) {
     }
 }
 
+/**
+ * Updates the active state of filter buttons based on the current filter
+ */
+
 function updateFilterButtonStates() {
     const buttons = document.querySelectorAll(".tab-btn");
     buttons.forEach(btn => {
@@ -607,7 +686,114 @@ function updateFilterButtonStates() {
     });
 }
 
+/**
+ * Filters tasks to show only those within the specified date range
+ * @param {string} fromDate - Start date in YYYY-MM-DD format
+ * @param {string} toDate - End date in YYYY-MM-DD format
+ */
+async function filterTasksByDateRange(fromDate, toDate) {
+    if (!todosCollection) {
+        console.log("Todos collection not initialized yet.");
+        return;
+    }
+    
+    try {
+        const user = auth.currentUser;
+        if (!user) return;
+        
+        // Convert string dates to Date objects for comparison
+        // Modified code for proper month handling
+        const [startYear, startMonth, startDay] = fromDate.split('-').map(Number);
+        const startDate = new Date(startYear, startMonth - 1, startDay); // Month is 0-indexed in JavaScript
+        startDate.setHours(0, 0, 0, 0);
 
+        const [endYear, endMonth, endDay] = toDate.split('-').map(Number);
+        const endDate = new Date(endYear, endMonth - 1, endDay); // Month is 0-indexed in JavaScript
+        endDate.setHours(23, 59, 59, 999);
+        // Clear the current list
+        listContainer.innerHTML = "";
+        
+        // Get all tasks from current filter
+        const q = query(collection(db, 'users', user.uid, 'todos'), orderBy("date", "asc"));
+        const querySnapshot = await getDocs(q);
+        
+        let tasksInRange = [];
+        
+        querySnapshot.forEach((doc) => {
+            const task = { id: doc.id, ...doc.data() };
+            
+            // Skip tasks without dates
+            if (!task.date) return;
+            
+            const taskDate = new Date(task.date);
+            taskDate.setHours(12, 0, 0, 0); // Noon to avoid timezone issues
+            
+            // Check if task is within date range
+            if (taskDate >= startDate && taskDate <= endDate) {
+                const isCompleted = task.completed;
+                const isArchived = task.archived || false;
+                
+                // Apply current filter logic within date range
+                let shouldDisplay = false;
+                switch (currentFilter) {
+                    case "all":
+                        if (!isArchived) shouldDisplay = true;
+                        break;
+                    case "upcoming":
+                        if (!isCompleted && !isArchived) shouldDisplay = true;
+                        break;
+                    case "overdue":
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (!isCompleted && !isArchived && taskDate < today) shouldDisplay = true;
+                        break;
+                    case "completed":
+                        if (isCompleted) shouldDisplay = true;
+                        break;
+                    default:
+                        if (!isArchived) shouldDisplay = true;
+                        break;
+                }
+                
+                if (shouldDisplay) {
+                    tasksInRange.push(task);
+                }
+            }
+        });
+        
+        // Sort tasks by date
+        tasksInRange.sort((a, b) => {
+            const dateA = a.date ? new Date(a.date) : null;
+            const dateB = b.date ? new Date(b.date) : null;
+            
+            if (!dateA && !dateB) return 0;
+            if (!dateA) return 1;
+            if (!dateB) return -1;
+            return dateA - dateB;
+        });
+        
+        // Display filtered tasks
+        if (tasksInRange.length > 0) {
+            tasksInRange.forEach(task => appendTask(task));
+            $.notify(`Found ${tasksInRange.length} tasks in the selected date range`, { className: "success", position: "top center" });
+        } else {
+            // Show a message in the list container when no tasks are found
+            const noTasksMessage = document.createElement("li");
+            noTasksMessage.classList.add("no-tasks-message");
+            noTasksMessage.textContent = "No tasks found in the selected date range";
+            listContainer.appendChild(noTasksMessage);
+            
+            $.notify("No tasks found in the selected date range", { className: "info", position: "top center" });
+        }
+        
+        // Update the filter buttons
+        updateFilterButtonStates();
+        
+    } catch (error) {
+        console.error("Error filtering tasks by date range:", error);
+        $.notify("Error filtering tasks by date range", { className: "error", position: "top center" });
+    }
+}
 
 
 

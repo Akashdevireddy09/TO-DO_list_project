@@ -51,12 +51,12 @@
       <div class="left-pane">
         <div class="todo_app">
           <!-- <h2>TO-DO LIST <img src="assets/images/logo.png" alt="todo_list_logo" /></h2> -->
-          <h5>Plan your work and work your plan</h5>
+          <h5><u>"Plan your work and work your plan"</u></h5>
           <h4>Add task:</h4>
-          <input type="text" id="input_task" placeholder="Add your task" />
+          <input type="text" id="input_task" placeholder="Add your task" required>
           
           <h4>Target date:</h4>
-          <input type="date" id="input_date" />
+          <input type="date" id="input_date" required>
           
           <button id="add_task_button">Add Task</button>
         </div>
@@ -64,6 +64,16 @@
     
       <!-- RIGHT: Task List Section -->
       <div class="right-pane">
+        <div class="search">
+          <div class="from_date">
+            <input type="date">
+          </div>
+          <div class="to_date">
+            <input type="date">
+          </div>
+          <button class="search_button">search</button>
+          <button class="reset_button">Reset</button>
+        </div>
         <ul id="list_container">
           <!-- Tasks appear here -->
         </ul>
