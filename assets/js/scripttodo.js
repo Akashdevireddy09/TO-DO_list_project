@@ -84,6 +84,15 @@ function filterTasks(filter) {
 //setting up all event listeners for the application
 function setupEventListeners() {
     console.log("Setting up event listeners...");
+
+    // Set minimum date for the task input date field to today
+    const inputDate = document.getElementById("input_date");
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    inputDate.setAttribute('min', formattedDate);
+
+    inputDate.setAttribute('required', 'true');
+    
     
     // Add Task Button
     addTaskButton.addEventListener("click", addTask);
@@ -102,14 +111,9 @@ function setupEventListeners() {
         }
     });
 
-     // Set minimum date for the task input date field to today
-     const inputDate = document.getElementById("input_date");
-     const today = new Date();
-     const formattedDate = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-     inputDate.setAttribute('min', formattedDate);
      
      // Add required attribute to input date field
-     inputDate.setAttribute('required', 'true');
+     
      
 
     // Logout Button - COMBINED version (use this and remove the duplicate)
@@ -253,7 +257,11 @@ async function displayTasks(filterType = "all") {
         listContainer.innerHTML = "";
     try {
         const user = auth.currentUser;
-        if (!user) return;
+        if (!user){
+            console.error("No authenticated user found");
+         return;
+        }
+            
 
         const q = query(collection(db, 'users', user.uid, 'todos'), orderBy("date", "asc"));
         const querySnapshot = await getDocs(q);
@@ -348,7 +356,8 @@ async function displayTasks(filterType = "all") {
 
         // Update visual state of filter buttons
         updateFilterButtonStates();
-
+       
+        
 
     } catch (e) {
         console.error("Error displaying tasks: ", e);
