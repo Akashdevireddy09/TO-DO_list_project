@@ -108,7 +108,6 @@
   flex-direction: column;
   /* background-color: #ffffff; */
   background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
- 
   width: 250%;
   max-width:400px;
   height: 400px;
@@ -312,6 +311,8 @@ nav{
   justify-content: space-between;
   /* border: 1px solid #000; */
   height:180px;
+ 
+ 
 }
 #input_task  {
   padding: 8px;
@@ -427,6 +428,7 @@ nav{
   /* border: 1px solid red; */
   min-height: 100px;
   
+  
 }
 /* button{
   margin-top:10px;
@@ -440,7 +442,8 @@ ul li{
   padding: 12px 8px 12px 40px;
   user-select:none;
   cursor:pointer;
-  border:0.5px solid blue;
+  border:3px solid blue;
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
   margin:5px;
   border-radius:20px;
   position:relative;
@@ -453,6 +456,8 @@ ul li{
 ul li:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+ 
 }
 
 ul li::before{
@@ -561,9 +566,9 @@ ul li::before{
 }
 
 ul li.checked{
-    color:#555;
+    color:green;
     text-decoration: line-through;
-    border: 2px solid green;
+    border: 3px solid green;
 }
 
 ul li.checked::before{
@@ -572,7 +577,7 @@ ul li.checked::before{
 }
 
 ul li.overdue {
-  border: 1px solid red; 
+  border: 3px solid red; 
   color: red;
   font-weight: bold; 
 }
@@ -627,4 +632,56 @@ ul li.overdue {
   font-family: inherit; /* Keep existing font */
 }
 
+@media (max-width: 768px) {
+  .main-layout {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
 
+  .todo_app {
+    position: relative;
+    width: 100%;
+    margin-left: 0;
+    top: 0;
+    left: 0;
+    height: auto;
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .left-pane {
+    width: 100%;
+    padding: 0;
+  }
+
+  .right-pane {
+    width: 100%;
+    height: auto;
+    padding: 15px;
+  }
+
+  nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    height: auto;
+  }
+
+  .nav-tabs {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  #logout_button {
+    align-self: flex-end;
+  }
+
+  .main-layout::before {
+    display: none;
+  }
+}
+
+body {
+  overflow-x: hidden;
+}
