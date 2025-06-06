@@ -1,6 +1,7 @@
 {
   "projects": {
-    "staging": "mytodolist-fa068"
+    "staging": "mytodolist-fa068",
+    "default": "mytodolist-fa068"
   },
   "targets": {},
   "etags": {}

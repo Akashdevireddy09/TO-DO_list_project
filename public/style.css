@@ -165,6 +165,7 @@ h5{
   height: 100vh;
   padding:20px;
   overflow-y: auto;
+  z-index: 1;;
  
 }
 
@@ -200,7 +201,7 @@ nav{
   height:80px;
   position: fixed;
   top: 0;
-  z-index: 10;
+  z-index: 100;
   /* background: linear-gradient(to right, #6a11cb, #2575fc); */
 
 }
@@ -433,55 +434,86 @@ nav{
   
   
 }
-/* button{
-  margin-top:10px;
-} */
 
 
-
-ul li{
-  list-style:none;
-  font-size:17px;
-  padding: 12px 8px 12px 40px;
-  user-select:none;
-  cursor:pointer;
-  border:3px solid blue;
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
-  margin:5px;
-  border-radius:20px;
-  position:relative;
-  display: flex; /* Use flexbox */
-  justify-content: space-between; /* Space text and icons properly */
-  align-items: center;
+ul li {
+  list-style: none;
+  font-size: 17px; /* Or 1rem/16px for base */
+  padding: 15px 20px; /* Adjust padding */
+  padding-left: 50px; /* Space for checkmark */
+  user-select: none;
+  cursor: pointer;
+  background-color: #ffffff; /* Light solid background */
+  border: 1px solid #e0e0e0; /* Subtle border */
+  
+  margin: 8px 0; /* Vertical spacing */
+  border-radius: 8px; /* Softer radius */
   position: relative;
-  transition: all 0.3s ease;
-}
-ul li:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
- 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease-in-out; /* Faster, smoother transition */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Softer shadow */
 }
 
-ul li::before{
-    content:'';
-    position:absolute;
-    width:25px;
-    height:25px;
-    border-radius:50%;
-    border:0.5px solid black;
-    /* background-image:url(images/unchecked.png); */
-    background-size:cover;
-    background-position:center;
-    top:12px;
-    left:8px;
+ul li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-color: #c0c0c0; /* Slightly darker border on hover */
+  border-left: 5px solid #00f2fe;
+  border-bottom:1px solid #00f2fe;
 }
+
+ul li::before { /* For custom checkmark, or replace with ion-icon */
+  content: '';
+  position: absolute;
+  width: 22px; /* Adjust size */
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #adb5bd; /* Gray border */
+  background-color: #fff;
+  top: 50%;
+  left: 15px; /* Adjust position */
+  transform: translateY(-50%);
+}
+
+ul li.checked {
+  color: #555; /* Or a slightly lighter color for text */
+  text-decoration: line-through;
+  border-left: 5px solid #28a745; /* Green accent border for completed */
+  background-color: #f8f9fa;
+}
+ul li.checked:hover{
+  border-bottom: 2px solid #28a745;
+}
+ul li.overdue:hover{
+  border-bottom: 2px solid #dc3545;
+}
+
+ul li.checked::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  background-image: url('assets/images/checked.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+ul li.overdue {
+  border-left: 5px solid #dc3545; /* Red accent border for overdue */
+  color: #dc3545; /* Or keep text color normal and only use border */
+}
+ul li.overdue::before {
+  border-color: #dc3545;
+}
+
 
 .button-container {
   display: flex;
-  gap: 10px; /* Add space between buttons */
+  gap: 10px; 
   align-items: center;
-  margin-left: auto; /* Push buttons to the right */
+  margin-left: auto; 
 }
 
 .edit, .delete {
@@ -494,11 +526,11 @@ ul li::before{
 }
 
 .edit {
-  background-image: url(images/edit.png);
+  background-image: url('assets/images/edit.png');
 }
 
 .delete {
-  background-image: url(images/trash.png);
+  background-image: url('assets/images/trash.png');
 }
 
 
@@ -556,7 +588,7 @@ ul li::before{
   color: #666;
   display:flex;
   align-items: center;
-  z-index: 999;
+  z-index: 1;
 }
 .due-date {
   display: block; /* Makes it appear below the task text */
@@ -568,22 +600,6 @@ ul li::before{
 
 }
 
-ul li.checked{
-    color:green;
-    text-decoration: line-through;
-    border: 3px solid green;
-}
-
-ul li.checked::before{
-     background-image: url(images/checked.png);
-     
-}
-
-ul li.overdue {
-  border: 3px solid red; 
-  color: red;
-  font-weight: bold; 
-}
 
 
 
