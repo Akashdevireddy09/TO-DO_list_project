@@ -359,10 +359,29 @@ onAuthStateChanged(auth, async user => {
     window.location.href = 'login.html';
   } else {
     console.log('User authenticated:', user.uid);
+    // --- START: NEW CODE FOR WELCOME MESSAGE ---
+        const welcomeMessageElement = document.getElementById('welcome_message');
+        if (user.email && welcomeMessageElement) {
+        const emailParts = user.email.split('@');
+        const usernameFromEmail = emailParts[0]; // Get the part before '@'
+  
+        // Capitalize the first letter for a nicer display (optional)
+        const displayName = usernameFromEmail.charAt(0).toUpperCase() + usernameFromEmail.slice(1);
+  
+         welcomeMessageElement.textContent = `Welcome, ${displayName}!`;
+
+         // Consider a more personalized notification too
+         $.notify(`Welcome back, ${displayName}! Loading your tasks...`, "info");
+
+  } else if (welcomeMessageElement) {
+    // Fallback if email is not available for some reason, or just hide it
+    welcomeMessageElement.textContent = 'Welcome!'; 
     $.notify("Welcome back! Loading your tasks...", "info");
-    document.body.style.display = 'block';
-    if (!eventListenersInitialized) setupEventListeners();
-    await displayTasks(currentFilter);
+  }
+
+document.body.style.display = 'block';
+if (!eventListenersInitialized) setupEventListeners();
+await displayTasks(currentFilter);
   }
 });
 
